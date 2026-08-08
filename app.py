@@ -4,20 +4,16 @@ import joblib
 
 app = Flask(__name__)
 
-# Load trained model and encoders
 model = joblib.load("notebook/medicine_price_model.pkl")
 encoders = joblib.load("notebook/label_encoders.pkl")
 
-# Load original dataset
 original_df = pd.read_csv("data/data.csv")
 
-# Keep a copy for prediction
+
 df = original_df.copy()
 
 
-# --------------------------------------------------
-# SAME PREPROCESSING AS TRAINING
-# --------------------------------------------------
+
 
 columns_to_drop = [
     "product_id",
@@ -26,13 +22,13 @@ columns_to_drop = [
     "packaging_raw"
 ]
 
-# Drop only columns that exist
+
 df = df.drop(
     columns=[c for c in columns_to_drop if c in df.columns]
 )
 
 
-# Fill missing values
+
 if "pack_size" in df.columns:
     df["pack_size"] = df["pack_size"].fillna(
         df["pack_size"].median()
@@ -49,7 +45,6 @@ if "primary_strength" in df.columns:
     )
 
 
-# Encode categorical columns
 categorical_columns = [
     "brand_name",
     "manufacturer",
@@ -67,9 +62,7 @@ for col in categorical_columns:
         )
 
 
-# --------------------------------------------------
-# PREDICT PRICE FOR EVERY MEDICINE
-# --------------------------------------------------
+
 
 X = df.drop("price_inr", axis=1)
 
@@ -78,9 +71,7 @@ predicted_prices = model.predict(X)
 original_df["predicted_price"] = predicted_prices
 
 
-# --------------------------------------------------
-# FLASK ROUTE
-# --------------------------------------------------
+
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -89,17 +80,15 @@ def home():
 
     if request.method == "POST":
 
-        # Get medicine entered by user
+     
         medicine = request.form["medicine"].strip()
 
-        # Convert search term to lowercase
+      
         medicine_lower = medicine.lower()
 
-        # ------------------------------------------
-        # FIND MEDICINE
-        # ------------------------------------------
+      
 
-        # First try exact match
+      
         medicine_row = original_df[
             original_df["brand_name"]
             .astype(str)
@@ -108,11 +97,7 @@ def home():
             == medicine_lower
         ]
 
-        # If exact match is not found,
-        # find brand names that START with the search term.
-        #
-        # This prevents "Crocin" from matching
-        # "Bacrocin 2% Ointment".
+       
         if medicine_row.empty:
 
             medicine_row = original_df[
@@ -126,9 +111,7 @@ def home():
                 )
             ]
 
-        # ------------------------------------------
-        # MEDICINE NOT FOUND
-        # ------------------------------------------
+        
 
         if medicine_row.empty:
 
@@ -138,18 +121,16 @@ def home():
 
         else:
 
-            # Take the first matching medicine
+           
             searched_medicine = medicine_row.iloc[0]
 
-            # Get salt / active ingredient
+           
             salt = searched_medicine["primary_ingredient"]
 
-            # Get dosage form
+           
             dosage_form = searched_medicine["dosage_form"]
 
-            # --------------------------------------
-            # FIND MEDICINES WITH SAME SALT
-            # --------------------------------------
+           
 
             same_salt = original_df[
                 original_df["primary_ingredient"]
@@ -160,9 +141,7 @@ def home():
                 str(salt).strip().lower()
             ]
 
-            # --------------------------------------
-            # FIND MEDICINES WITH SAME DOSAGE FORM
-            # --------------------------------------
+           
 
             same_form = same_salt[
                 same_salt["dosage_form"]
@@ -173,12 +152,7 @@ def home():
                 str(dosage_form).strip().lower()
             ]
 
-            # Only compare medicines with the same
-            # dosage form when possible.
-            #
-            # Example:
-            # Tablet -> compare with tablets
-            # Ointment -> compare with ointments
+           
             if not same_form.empty:
 
                 comparable_medicines = same_form
@@ -187,17 +161,13 @@ def home():
 
                 comparable_medicines = same_salt
 
-            # --------------------------------------
-            # FIND CHEAPEST MEDICINE
-            # --------------------------------------
+            
 
             cheapest = comparable_medicines.loc[
                 comparable_medicines["predicted_price"].idxmin()
             ]
 
-            # --------------------------------------
-            # CREATE RESULT
-            # --------------------------------------
+            
 
             result = {
                 "searched": medicine,
@@ -217,9 +187,7 @@ def home():
     )
 
 
-# --------------------------------------------------
-# RUN FLASK APP
-# --------------------------------------------------
+
 
 if __name__ == "__main__":
     app.run(debug=True)
