@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Price Predictor</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Medicine Price Predictor</h1>
+        <p>Find the cheapest medicine having the same salt.</p>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="medicine"
+                placeholder="Enter Medicine Name"
+                required
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+        {% if result %}
+
+            {% if result.error %}
+
+                <div class="error">
+                    {{ result.error }}
+                </div>
+
+            {% else %}
+
+                <div class="result">
+
+                    <h2>Cheapest Alternative</h2>
+
+                    <table>
+
+                        <tr>
+                            <td><strong>Medicine Searched</strong></td>
+                            <td>{{ result.searched }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Salt</strong></td>
+                            <td>{{ result.salt }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Cheapest Medicine</strong></td>
+                            <td>{{ result.brand }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Manufacturer</strong></td>
+                            <td>{{ result.manufacturer }}</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Predicted Price</strong></td>
+                            <td>₹ {{ result.price }}</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
