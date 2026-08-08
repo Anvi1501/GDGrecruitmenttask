@@ -1,14 +1,24 @@
-# Medicine Price Prediction
+# Medicine Price Prediction & Cheapest Alternative Recommendation
 
-A machine learning project that predicts the price of medicines based on their features. The project includes data preprocessing, exploratory data analysis (EDA), model training, prediction, and a simple Flask web application for user interaction.
+## About the Project
+
+This project was built to help users find a cheaper alternative for a medicine. The user enters the name of a medicine, and the system identifies its primary ingredient (salt), compares medicines containing the same salt, predicts their prices using a trained Machine Learning model, and recommends the cheapest option.
+
+The project also includes data preprocessing, model training, and a simple web interface built using Flask.
+
+---
 
 ## Features
 
-- Data preprocessing and cleaning
-- Exploratory Data Analysis (EDA)
-- Machine Learning model training
-- Price prediction
-- Flask web interface
+- Cleaned and preprocessed the medicine dataset
+- Performed Exploratory Data Analysis (EDA)
+- Trained a Random Forest Regression model for price prediction
+- Search medicines using their brand name
+- Automatically identify the medicine's primary ingredient (salt)
+- Recommend the cheapest medicine with the same salt
+- Simple Flask-based web interface
+
+---
 
 ## Project Structure
 
@@ -21,7 +31,9 @@ GDGrecruitmenttask/
 ├── notebook/
 │   ├── EDA.ipynb
 │   ├── Model_Training.ipynb
-│   └── Prediction.ipynb
+│   ├── Prediction.ipynb
+│   ├── medicine_price_model.pkl
+│   └── label_encoders.pkl
 │
 ├── static/
 │   └── style.css
@@ -35,51 +47,7 @@ GDGrecruitmenttask/
 └── .gitignore
 ```
 
-## Installation
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/Anvi1501/GDGrecruitmenttask.git
-```
-
-2. Navigate to the project
-
-```bash
-cd GDGrecruitmenttask
-```
-
-3. Create a virtual environment
-
-```bash
-python -m venv .venv
-```
-
-4. Activate it
-
-**Windows**
-
-```bash
-.venv\Scripts\activate
-```
-
-5. Install dependencies
-
-```bash
-pip install -r requirement.txt
-```
-
-## Running the Flask App
-
-```bash
-python app.py
-```
-
-Open your browser and visit:
-
-```
-http://127.0.0.1:5000
-```
+---
 
 ## Technologies Used
 
@@ -87,11 +55,83 @@ http://127.0.0.1:5000
 - Pandas
 - NumPy
 - Scikit-learn
-- Matplotlib
 - Flask
 - HTML
 - CSS
 
+---
+
+## How to Run
+
+### Clone the repository
+
+```bash
+git clone https://github.com/Anvi1501/GDGrecruitmenttask.git
+```
+
+### Move into the project folder
+
+```bash
+cd GDGrecruitmenttask
+```
+
+### Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+### Activate the environment
+
+**Windows**
+
+```bash
+.venv\Scripts\activate
+```
+
+### Install the required libraries
+
+```bash
+pip install -r requirement.txt
+```
+
+### Run the Flask application
+
+```bash
+python app.py
+```
+
+Open your browser and visit
+
+```
+http://127.0.0.1:5000
+```
+
+---
+
+## Project Workflow
+
+1. Load the medicine dataset.
+2. Clean and preprocess the data.
+3. Train the Random Forest model.
+4. Save the trained model and label encoders.
+5. User enters a medicine name through the website.
+6. The application finds the medicine's primary ingredient.
+7. All medicines containing the same salt are compared.
+8. The model predicts their prices.
+9. The medicine with the lowest predicted price is displayed.
+
+---
+
+## Future Improvements
+
+- Filter recommendations based on dosage form (Tablet, Syrup, Injection, etc.)
+- Improve prediction accuracy by trying different machine learning models.
+- Add medicine search suggestions and autocomplete.
+- Deploy the application online.
+
+---
+
 ## Note
 
-The trained model (`medicine_price_model.pkl`) and label encoders (`label_encoders.pkl`) are not included in this repository because of GitHub's file size limitations.
+The trained model (`medicine_price_model.pkl`) and label encoders (`label_encoders.pkl`) are not included in this repository because of GitHub's file size limits.
